@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+  prosody:
+    image: jitsi/prosody:latest
+    restart: always
+    environment:
+      - AUTH_TYPE=jwt
+      - JWT_APP_ID=rezo_app
+      - JWT_APP_SECRET=${JITSI_SECRET}
+      - XMPP_DOMAIN=meet.rezos.com.br
+      - XMPP_AUTH_DOMAIN=auth.meet.rezos.com.br
+      - XMPP_GUEST_DOMAIN=guest.meet.rezos.com.br
+      - XMPP_MUC_DOMAIN=muc.meet.rezos.com.br
+      - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.rezos.com.br
+    volumes:
+      - prosody_config:/config
+      - prosody_data:/prosody
+    networks:
+      - jitsi
+  web:
+    image: jitsi/web:latest
+    restart: always
+    environment:
+      - ENABLE_AUTH=1
+      - ENABLE_GUESTS=1
+      - PUBLIC_URL=https://meet.rezos.com.br
+      - XMPP_DOMAIN=meet.rezos.com.br
+      - XMPP_AUTH_DOMAIN=auth.meet.rezos.com.br
+      - XMPP_GUEST_DOMAIN=guest.meet.rezos.com.br
+      - XMPP_MUC_DOMAIN=muc.meet.rezos.com.br
+      - JWT_APP_ID=rezo_app
+      - JWT_APP_SECRET=${JITSI_SECRET}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - web_config:/config
+      - web_certs:/etc/letsencrypt
+    networks:
+      - jitsi
+  jvb:
+    image: jitsi/jvb:latest
+    restart: always
+    environment:
+      - DOCKER_HOST_ADDRESS=${DOCKER_HOST_ADDRESS}
+      - XMPP_AUTH_DOMAIN=auth.meet.rezos.com.br
+      - XMPP_INTERNAL_MUC_DOMAIN=internal-muc.meet.rezos.com.br
+      - XMPP_SERVER_NAME=meet.rezos.com.br
+    ports:
+      - '10000:10000/udp'
+    networks:
+      - jitsi
+  jicofo:
+    image: jitsi/jicofo:latest
+    restart: always
+    environment:
+      - XMPP_DOMAIN=meet.rezos.com.br
+      - XMPP_AUTH_DOMAIN=auth.meet.rezos.com.br
+      - XMPP_MUC_DOMAIN=muc.meet.rezos.com.br
+    networks:
+      - jitsi
+volumes:
+  prosody_config:
+  prosody_data:
+  web_config:
+  web_certs:
+networks:
+  jitsi:
+    driver: bridge
