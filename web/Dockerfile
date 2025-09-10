@@ -51,7 +51,7 @@
 # VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
 # CMD ["/start.sh"]
 ARG JITSI_REPO=jitsi
-ARG BASE_TAG=stable-9750
+ARG BASE_TAG=stable-9646
 FROM ${JITSI_REPO}/base:${BASE_TAG}
 LABEL org.opencontainers.image.title="Jitsi Meet"
 LABEL org.opencontainers.image.description="WebRTC compatible JavaScript application that uses Jitsi Videobridge to provide high quality, scalable video conferences."
