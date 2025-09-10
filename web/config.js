@@ -4,5 +4,6 @@ var config = {
     muc: 'muc.meet.rezos.com.br',
     anonymousdomain: 'guest.meet.rezos.com.br'
   },
-  requireRoomPassword: true
+  requireRoomPassword: true,
+  enableUserRolesBasedOnToken: true
 };
